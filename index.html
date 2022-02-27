@@ -20,12 +20,30 @@
     <div id="root"></div>
     <script type="text/babel">
       class App extends React.Component {
-        super() {
-          this.state = {};
+        constructor() {
+          super();
+          this.state = {
+            brands: [],
+          };
+        }
+
+        async componentDidMount() {
+          const brandresponse = await axios.get("/api/brands");
+          this.setState({ brands: brandresponse.data });
         }
 
         render() {
-          return <h1> Robby's App is UP AND RUNNING </h1>;
+          return (
+            <div>
+              <h1> Robbys' Guitar Shop</h1>
+               <h2> Brand List</h2> 
+              <ul>
+                {this.state.brands.map((brand) => (
+                  <li>{brand.name}</li>
+                ))}
+              </ul>
+            </div>
+          );
         }
       }
 
