@@ -19,6 +19,21 @@
   <body>
     <div id="root"></div>
     <script type="text/babel">
+      const Address = (props) => {
+        return (
+          <div>
+            <h1> ------------------------ </h1>
+            <h1> Contact Info: </h1>
+            <h2> Robby's Guitar Shop</h2>
+            <h3> 121 Johnson Drive</h3>
+            <h3> Johnsonville, NY</h3>
+            <h3> Phone: 212-312-1212</h3>
+            <h3> Email: RobbysGuitar@guitar.com</h3>
+            <h1> ------------------------ </h1>
+          </div>
+        );
+      };
+
       class App extends React.Component {
         constructor() {
           super();
@@ -57,6 +72,9 @@
                     </li>
                   );
                 })}
+              </ul>
+              <ul>
+                <Address name="address" />
               </ul>
             </div>
           );
