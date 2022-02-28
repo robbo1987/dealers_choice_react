@@ -1,36 +1,13 @@
-const Sequelize = require("sequelize");
-const db = new Sequelize(
-  process.env.DATABSE_URL || "postgres://localhost/guitar_shop"
-);
+
+const db = require('./db')
+const Guitar = db.Guitar;
+const Brand = db.Brand;
+const sequelize = db.sequelize
+
 const express = require("express");
 const app = express();
 const port = process.env.PORT || 3000;
 const path = require("path");
-
-const Guitar = db.define("guitar", {
-  name: {
-    type: Sequelize.DataTypes.STRING,
-    allowNull: false,
-    unique: true,
-    validate: {
-      notEmpty: true,
-    },
-  },
-});
-
-const Brand = db.define("brand", {
-  name: {
-    type: Sequelize.DataTypes.STRING,
-    allowNull: false,
-    unique: true,
-    validate: {
-      notEmpty: true,
-    },
-  },
-});
-
-Guitar.belongsTo(Brand);
-Brand.hasMany(Guitar);
 
 app.get("/", (req, res, next) =>
   res.sendFile(path.join(__dirname, "index.html"))
@@ -74,7 +51,7 @@ app.get("/api/guitars/:id", async (req, res, next) => {
 
 const seedAndSync = async () => {
   try {
-    await db.sync({ force: true });
+    await sequelize.sync({ force: true });
     console.log("data is seeded");
     const fender = await Brand.create({ name: "Fender" });
     const gibson = await Brand.create({ name: "Gibson" });
