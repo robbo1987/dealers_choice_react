@@ -8,11 +8,23 @@ const app = express();
 const port = process.env.PORT || 3000;
 const path = require("path");
 
+app.use("/api", require("./api.routes"));
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 app.get("/", (req, res, next) =>
   res.sendFile(path.join(__dirname, "index.html"))
 );
 
-app.use("/api", require("./api.routes"));
+app.post("/", async (req, res, next) => {
+  console.log(req.body);
+  try {
+    const brand = await Brand.create(req.body);
+    const brandWithGuitars = await Brand.findByPk(brand.id, {include :[Guitar]} )
+    res.send(brandWithGuitars);
+  } catch (ex) {
+    next(ex);
+  }
+});
 
 const seedAndSync = async () => {
   try {
@@ -56,3 +68,15 @@ const seedAndSync = async () => {
 };
 
 seedAndSync();
+
+/*
+app.post("/", async (req, res, next) => {
+  try {
+    console.log(req.body)
+    const guitarist = await Guitarist.create(req.body);
+    console.log(req.body)
+    res.redirect("/");
+  } catch (ex) {
+    next(ex);
+  }
+}); */

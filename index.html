@@ -1,5 +1,3 @@
-
-
 <html>
   <head>
     <script
@@ -36,13 +34,38 @@
         );
       };
 
+      const Body = (props) => {
+        return (
+          <div>
+            <ul>
+              {props.brands.map((brand) => (
+                <li>{brand.name}</li>
+              ))}
+            </ul>
+            <h2> Guitars for Sale</h2>
+            <ul>
+              {props.guitars.map((guitar) => {
+                return (
+                  <li>
+                    {guitar.brand.name} - {guitar.name}
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        );
+      };
+
       class App extends React.Component {
         constructor() {
           super();
           this.state = {
             brands: [],
             guitars: [],
+            name: "",
           };
+          this.onChange = this.onChange.bind(this);
+          this.onSubmit = this.onSubmit.bind(this);
         }
 
         async componentDidMount() {
@@ -55,26 +78,35 @@
           console.log(guitarResponse.data);
         }
 
+        onChange(event) {
+          this.setState({ name: event.target.value });
+        }
+
+        async onSubmit(event) {
+          event.preventDefault();
+          const response = await axios.post("/", { name: this.state.name });
+          this.setState({ brands: [...this.state.brands, response.data] });
+          console.log("response", response);
+        }
+
         render() {
+          console.log(this.state.brands);
           return (
             <div>
               <h1> Robbys' Guitar Shop</h1>
               <h2> Brand List</h2>
-              <ul>
-                {this.state.brands.map((brand) => (
-                  <li>{brand.name}</li>
-                ))}
-              </ul>
-              <h2> Guitars for Sale</h2>
-              <ul>
-                {this.state.guitars.map((guitar) => {
-                  return (
-                    <li>
-                      {guitar.brand.name} - {guitar.name}
-                    </li>
-                  );
-                })}
-              </ul>
+              <div>
+                <form onSubmit={this.onSubmit}>
+                  <input
+                    name="name"
+                    //value="prof"//
+                    onChange={this.onChange}
+                    placeholder="brand name"
+                  ></input>
+                  <button>INSERT NEW BRAND</button>
+                </form>
+              </div>
+              <Body guitars={this.state.guitars} brands={this.state.brands} />
               <ul>
                 <Address />
               </ul>
