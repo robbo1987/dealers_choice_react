@@ -1,8 +1,7 @@
-
-const db = require('./db')
-const Guitar = db.Guitar;
-const Brand = db.Brand;
-const sequelize = db.sequelize
+const db = require("./db");
+const { Guitar } = db;
+const { Brand } = db;
+const sequelize = db.sequelize;
 
 const express = require("express");
 const app = express();
@@ -13,41 +12,7 @@ app.get("/", (req, res, next) =>
   res.sendFile(path.join(__dirname, "index.html"))
 );
 
-app.get("/api/guitars", async (req, res, next) => {
-  try {
-    res.send(
-      await Guitar.findAll({
-        include: [Brand],
-      })
-    );
-  } catch (ex) {
-    next(ex);
-  }
-});
-
-app.get("/api/brands", async (req, res, next) => {
-  try {
-    res.send(await Brand.findAll({ include: [Guitar] }));
-  } catch (ex) {
-    next(ex);
-  }
-});
-
-app.get("/api/brands/:id", async (req, res, next) => {
-  try {
-    res.send(await Brand.findByPk(req.params.id, { include: Guitar }));
-  } catch (ex) {
-    next(ex);
-  }
-});
-
-app.get("/api/guitars/:id", async (req, res, next) => {
-  try {
-    res.send(await Guitar.findByPk(req.params.id, { include: Brand }));
-  } catch (ex) {
-    next(ex);
-  }
-});
+app.use("/api", require("./api.routes"));
 
 const seedAndSync = async () => {
   try {
